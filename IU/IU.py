@@ -71,6 +71,7 @@ class App(tk.Tk):
         # Variables para almacenar las selecciones del usuario
         self.user_selection = {"Géneros": [], "Época": []}
         self.usertags = ""
+        self.user_id = tk.StringVar()
 
         # Etiqueta de introducción
         self.intro_label = tk.Label(self, text="Seleccione sus preferencias:", font=("Cinematografica", 30), bg="lightblue")
@@ -98,15 +99,33 @@ class App(tk.Tk):
         self.textbox = tk.Text(self, height=10, width=50, wrap="word")
         self.textbox.pack(pady=5)
 
-        # Botón para recomendar
-        self.recommend_button = tk.Button(self, text="Recomendar", command=self.recommend, font=("Milky Vintage", 24), bg="lightgreen", width=15)
-        self.recommend_button.pack(pady=20)
+        # Marco para el ID y el botón
+        self.id_button_frame = tk.Frame(self, bg="lightblue")
+        self.id_button_frame.pack(pady=20)
+
+        # Entrada de texto para el ID de usuario (campo izquierdo)
+        self.id_label = tk.Label(self.id_button_frame, text="ID:", font=("Milky Vintage", 20), bg="lightblue")
+        self.id_label.grid(row=0, column=0, padx=5)
+        self.id_entry = tk.Entry(self.id_button_frame, textvariable=self.user_id, font=("Milky Vintage", 20), width=10, justify="center")
+        self.id_entry.grid(row=0, column=1, padx=5)
+        self.id_entry.config(validate="key", validatecommand=(self.register(self.validate_id), "%P"))
+
+        # Botón para recomendar (campo derecho)
+        self.recommend_button = tk.Button(self.id_button_frame, text="Recomendar", command=self.recommend, font=("Milky Vintage", 24), bg="lightgreen", width=15)
+        self.recommend_button.grid(row=0, column=2, padx=5)
+
+    def validate_id(self, new_value):
+        """Valida que el ID solo contenga hasta 5 dígitos numéricos."""
+        return new_value.isdigit() and len(new_value) <= 5 or new_value == ""
+
     def get_user_selection(self):
         """Devuelve las selecciones de género y época del usuario."""
         return self.user_selection
+
     def get_user_text_tags(self):
         """Devuelve el texto de la caja de texto en bruto como una lista de palabras."""
         return self.usertags.split()
+
     def show_multiselect(self, title, options, dropdown_widget, category):
         """Abre el diálogo de selección múltiple y actualiza el desplegable con las selecciones."""
         # Usar la imagen de fondo específica para cada categoría
@@ -128,13 +147,15 @@ class App(tk.Tk):
 
         self.usertags = raw_text
         selected_categories = "\n".join([f"{cat}: {', '.join(options)}" for cat, options in self.user_selection.items()])
-
-        messagebox.showinfo("Selección del Usuario", f"Ha seleccionado:\n\n{selected_categories}\n\nTexto:\n{self.usertags}")
-        # Aquí puedes procesar `self.user_selection` y `self.usertags` para generar recomendaciones
+        
+        # Mostrar ID de usuario junto con la selección
+        user_id_text = self.user_id.get() or 99999
+        messagebox.showinfo("Selección del Usuario", f"ID de Usuario: {user_id_text}\n\nHa seleccionado:\n\n{selected_categories}\n\nTexto:\n{self.usertags}")
 
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()  
-    print(app.get_user_selection())
-    print(app.get_user_text_tags())
+    print(app.get_user_selection()) # Da un diccionario con 2 claves y cada clave con una lista de palabras
+    print(app.get_user_text_tags()) # Da una lista de palabras
+    print(app.user_id.get()) #Da un INT
