@@ -91,7 +91,7 @@ class Interfaz(tk.Tk):
         self.label2.pack(pady=5)
         self.dropdown2 = ttk.Combobox(self, values=["Seleccione opciones"], state="readonly")
         self.dropdown2.set("Seleccione opciones")
-        self.dropdown2.bind("<Button-1>", lambda e: self.show_multiselect("Época", ["1930", "1940", "1950", "1960", "1970", "1980", "1990", "2000", "2010", "2020"], self.dropdown2, "epoca"))
+        self.dropdown2.bind("<Button-1>", lambda e: self.show_multiselect("Época", ["1930", "1940", "1950", "1960", "1970", "1980", "1990", "2000"], self.dropdown2, "epoca"))
         self.dropdown2.pack(pady=5)
 
         # Caja de texto para escribir en bruto
